@@ -2,9 +2,10 @@
 /**
  * OAuth Exception
  *
- * @package    OAuth
- * @author     Paul Dixon
- * @copyright  (c) 2010 Paul Dixon
- * @license    http://kohanaphp.com/license.html
+ * @package    Kohana/OAuth
+ * @package    Exceptions
+ * @author     Kohana Team
+ * @copyright  (c) 2010 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
-class OAuth_Exception extends Kohana_Exception {} // End OAuth_Exception
+class OAuth_Exception extends Kohana_Exception {  }

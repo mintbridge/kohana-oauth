@@ -2,12 +2,12 @@
 /**
  * OAuth Token
  *
- * @package    OAuth
- * @author     Paul Dixon
- * @copyright  (c) 2010 Paul Dixon
- * @license    http://kohanaphp.com/license.html
+ * @package    Kohana/OAuth
+ * @package    Token
+ * @author     Kohana Team
+ * @copyright  (c) 2010 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
 abstract class OAuth_Token {
 
-	
 } // End OAuth_Token

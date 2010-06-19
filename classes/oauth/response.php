@@ -2,12 +2,12 @@
 /**
  * OAuth Response
  *
- * @package    OAuth
- * @author     Paul Dixon
- * @copyright  (c) 2010 Paul Dixon
- * @license    http://kohanaphp.com/license.html
+ * @package    Kohana/OAuth
+ * @package    Base
+ * @author     Kohana Team
+ * @copyright  (c) 2010 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
 abstract class OAuth_Response {
 
-	
 } // End OAuth_Response
