@@ -10,4 +10,21 @@
  */
 abstract class OAuth_Signature {
 
+	protected $name;
+
+	final public function name()
+	{
+		return $this->name;
+	}
+
+	public function sign($data, OAuth_Consumer $consumer)
+	{
+		return OAuth::urlencode($consumer->key).'&'.OAuth::urlencode($consumer->secret);
+	}
+
+	public function verify($data, OAuth_Consumer $consumer, $signature);
+	{
+		return $signature === $this->sign($data, $consumer);
+	}
+
 } // End OAuth_Signature
