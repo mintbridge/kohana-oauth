@@ -10,16 +10,20 @@
  */
 abstract class OAuth {
 
-	public static function urlencode_rfc3986($input)
+	/**
+	 * RFC3986 compatible version of urlencode.
+	 */
+	public static function urlencode($input)
 	{
 		if (is_array($input))
 		{
-			return array_map(array('OAuth', 'urlencode_rfc3986'), $input);
+			return array_map(array('OAuth', 'urlencode'), $input);
 		}
 		elseif (is_scalar($input))
 		{
-			return str_replace('+', ' ', str_replace('%7E', '~', rawurlencode($input)));
+			return str_replace(array('+', '%7E'), array(' ', '~'), rawurlencode($input)));
 		}
+
 		return '';
 	}
 
