@@ -4,9 +4,13 @@ class OAuth_Signature_HMAC_SHA1 extends OAuth_Signature {
 
 	protected $name = 'HMAC-SHA1';
 
-	public function sign($data, OAuth_Consumer $consumer)
+	public function sign($data, OAuth_Consumer $consumer, OAuth_Token $token = NULL)
 	{
-		return hash_hmac('sha1', $data, parent::sign($data, $consumer));
+		$key = $this->secrets($consumer, $token);
+
+		$hash = hash_hmac('sha1', $data, $key, TRUE);
+
+		return base64_encode($hash);
 	}
 
 } // End OAuth_Signature_HMAC_SHA1

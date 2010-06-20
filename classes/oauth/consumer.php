@@ -10,27 +10,39 @@
  */
 class OAuth_Consumer {
 
+	public static function factory(array $options = NULL)
+	{
+		return new OAuth_Consumer($options);
+	}
+
 	protected $key;
 
 	protected $secret;
 
+	protected $callback;
+
 	public function __construct(array $options = NULL)
 	{
-		if ( ! isset($options['consumer_key']))
+		if ( ! isset($options['key']))
 		{
 			throw new OAuth_Exception('Required option not passed: :option',
-				array(':option' => 'consumer_key'));
+				array(':option' => 'key'));
 		}
 
-		if ( ! isset($options['consumer_secret']))
+		if ( ! isset($options['secret']))
 		{
 			throw new OAuth_Exception('Required option not passed: :option',
-				array(':option' => 'consumer_secret'));
+				array(':option' => 'secret'));
 		}
 
-		$this->key = $options['consumer_key'];
+		$this->key = $options['key'];
 
-		$this->secret = $options['consumer_secret'];
+		$this->secret = $options['secret'];
+
+		if (isset($options['callback']))
+		{
+			$this->callback = $options['callback'];
+		}
 	}
 
 	public function __get($key)

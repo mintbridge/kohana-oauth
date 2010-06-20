@@ -10,21 +10,54 @@
  */
 abstract class OAuth_Signature {
 
+	public static function factory($name, array $options = NULL)
+	{
+		$class = __CLASS__.'_'.str_replace('-', '_', $name);
+
+		return new $class($options);
+	}
+
 	protected $name;
 
-	final public function name()
+	public function __get($key)
 	{
-		return $this->name;
+		return $this->$key;
 	}
 
-	public function sign($data, OAuth_Consumer $consumer)
+	public function base(OAuth_Request $request, OAuth_Consumer $consumer, OAuth_Token $token = NULL)
 	{
-		return OAuth::urlencode($consumer->key).'&'.OAuth::urlencode($consumer->secret);
+		$params = $request->params;
+
+		// oauth_signature is never included in the base string!
+		unset($params['oauth_signature']);
+
+		// method & url & sorted-parameters
+		return implode('&', array(
+			$request->method,
+			OAuth::urlencode($request->url),
+			OAuth::urlencode(OAuth::build_query($params)),
+		));
 	}
 
-	public function verify($data, OAuth_Consumer $consumer, $signature);
+	public function secrets(OAuth_Consumer $consumer, OAuth_Token $token = NULL)
 	{
-		return $signature === $this->sign($data, $consumer);
+		$base = OAuth::urlencode($consumer->secret).'&';
+
+		if ($token)
+		{
+			$base .= OAuth::urlencode($token->secret);
+		}
+
+		return $base;
 	}
+
+	abstract public function sign($data, OAuth_Consumer $consumer, OAuth_Token $token);
+
+	public function verify($signature, $data, OAuth_Consumer $consumer, OAuth_Token $token)
+	{
+		return $signature === $this->sign($data, $consumer, $token);
+	}
+
+
 
 } // End OAuth_Signature
