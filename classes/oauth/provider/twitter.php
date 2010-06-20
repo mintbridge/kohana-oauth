@@ -19,11 +19,11 @@ class OAuth_Provider_Twitter extends OAuth_Provider {
 	public function request_token()
 	{
 		$params = array(
-			'oauth_version'                   => $this->version,
-			'oauth_consumer_key'              => $this->consumer->key,
-			'oauth_consumer_signature_method' => $this->signature->name,
-			'oauth_timestamp'                 => $this->timestamp(),
-			'oauth_nonce'                     => $this->nonce(),
+			'oauth_version'          => $this->version,
+			'oauth_consumer_key'     => $this->consumer->key,
+			'oauth_signature_method' => $this->signature->name,
+			'oauth_timestamp'        => $this->timestamp(),
+			'oauth_nonce'            => $this->nonce(),
 		);
 
 		if ($this->consumer->callback)
@@ -31,7 +31,7 @@ class OAuth_Provider_Twitter extends OAuth_Provider {
 			$params['oauth_callback'] = $this->consumer->callback;
 		}
 
-		$request = new OAuth_Request('POST', 'https://api.twitter.com/oauth/request_token', $params);
+		$request = new OAuth_Request('GET', 'https://api.twitter.com/oauth/request_token', $params);
 
 		$base = $this->signature->base($request, $this->consumer);
 
