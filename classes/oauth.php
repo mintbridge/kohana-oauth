@@ -69,4 +69,9 @@ abstract class OAuth {
 		return implode('&', $query);
 	}
 
+	public static function parse_str($str)
+	{
+		
+	}
+
 } // End OAuth

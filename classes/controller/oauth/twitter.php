@@ -19,7 +19,7 @@ class Controller_OAuth_Twitter extends Controller {
 	{
 		$config = Kohana::config('oauth.twitter');
 
-		$config['callback'] = 'http://demo.kohanaframework.org/oauth/twitter/complete';
+		$config['callback'] = 'http://demo.kohanaframework.org/oauth/twitter/login';
 
 		$consumer = OAuth_Consumer::factory($config);
 

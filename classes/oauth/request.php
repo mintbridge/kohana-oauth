@@ -49,10 +49,8 @@ class OAuth_Request {
 		return $this;
 	}
 
-	public function execute()
+	public function as_header()
 	{
-		return Remote::get($this->url.'?'.OAuth::build_query($this->params));
-
 		$header = array();
 
 		foreach ($this->params as $key => $value)
@@ -60,13 +58,38 @@ class OAuth_Request {
 			$header[] = OAuth::urlencode($key).'="'.OAuth::urlencode($value).'"';
 		}
 
-		$options = array(
-			CURLOPT_HEADER     => TRUE,
-			// CURLOPT_POST       => TRUE,
-			CURLOPT_HTTPHEADER => array('Authorization: OAuth '.implode(', ', $header)),
-		);
+		return 'Authorization: OAuth '.implode(', ', $header);
+	}
 
-		echo Kohana::debug(Remote::get($this->url, $options));exit;
+	public function as_query()
+	{
+		return '?'.OAuth::build_query($this->params);
+	}
+
+	public function as_post()
+	{
+		return OAuth::build_query($this->params);
+	}
+
+	public function execute($type = NULL, array $options = NULL)
+	{
+		$url = $this->url;
+
+		switch ($type)
+		{
+			case 'query':
+				$url .= $this->as_query();
+			break;
+			case 'post':
+				$options[CURLOPT_POST]       = TRUE;
+				$options[CURLOPT_POSTFIELDS] = $this->as_post();
+			break;
+			default:
+				$options[CURLOPT_HTTPHEADER][] = $this->as_header();
+			break;
+		}
+
+		return Remote::get($url, $options);
 	}
 
 } // End OAuth_Request

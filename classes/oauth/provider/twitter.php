@@ -37,9 +37,14 @@ class OAuth_Provider_Twitter extends OAuth_Provider {
 
 		$request->param('oauth_signature', $this->signature->sign($base, $this->consumer));
 
-		$token = $request->execute($params);
+		$response = $request->execute();
 
-		return new OAuth_Token($token);
+		parse_str($response, $token);
+
+		return new OAuth_Token(array(
+			'token' => $token['oauth_token'],
+			'secret' => $token['oauth_token_secret']
+		));
 	}
 
 	public function access_token()
