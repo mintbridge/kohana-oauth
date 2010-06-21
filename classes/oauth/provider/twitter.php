@@ -1,54 +1,63 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
+/**
+ * OAuth Twitter Provider
+ *
+ * @package    Kohana/OAuth
+ * @category   Provider
+ * @author     Kohana Team
+ * @copyright  (c) 2010 Kohana Team
+ * @license    http://kohanaframework.org/license
+ */
 class OAuth_Provider_Twitter extends OAuth_Provider {
 
-	protected $signature;
+	protected $signature = 'HMAC-SHA1';
 
-	public function __construct(OAuth_Consumer $consumer)
+	public function request_token(OAuth_Consumer $consumer)
 	{
-		parent::__construct($consumer);
+		$request = OAuth_Request::factory('token', 'https://api.twitter.com/oauth/request_token')
+			->params(array(
+				'oauth_consumer_key' => $consumer->key,
+				'oauth_callback'     => $consumer->callback,
+			));
 
-		$this->signature = new OAuth_Signature_HMAC_SHA1;
-	}
+		// Sign the request using only the consumer, no token is available yet
+		$request->sign($this->signature, $consumer);
 
-	public function __toString()
-	{
-		return get_class($this).'['.implode(',', OAuth::urlencode($this->params())).']';
-	}
-
-	public function request_token()
-	{
-		$params = array(
-			'oauth_version'          => $this->version,
-			'oauth_consumer_key'     => $this->consumer->key,
-			'oauth_signature_method' => $this->signature->name,
-			'oauth_timestamp'        => $this->timestamp(),
-			'oauth_nonce'            => $this->nonce(),
-		);
-
-		if ($this->consumer->callback)
-		{
-			$params['oauth_callback'] = $this->consumer->callback;
-		}
-
-		$request = new OAuth_Request('GET', 'https://api.twitter.com/oauth/request_token', $params);
-
-		$base = $this->signature->base($request, $this->consumer);
-
-		$request->param('oauth_signature', $this->signature->sign($base, $this->consumer));
-
+		// Create a response from the request
 		$response = $request->execute();
 
-		parse_str($response, $token);
-
-		return new OAuth_Token(array(
-			'token' => $token['oauth_token'],
-			'secret' => $token['oauth_token_secret']
+		// Store this token somewhere useful
+		return OAuth_Token::factory('request', array(
+			'token'  => $response->param('oauth_token'),
+			'secret' => $response->param('oauth_token_secret'),
 		));
 	}
 
-	public function access_token()
+	public function authorize_url(OAuth_Token $token)
 	{
+		return 'https://api.twitter.com/oauth/authorize?oauth_token='.OAuth::urlencode($token->token);
+	}
+
+	public function access_token(OAuth_Consumer $consumer, OAuth_Token $token)
+	{
+		$request = OAuth_Request::factory('access', 'https://api.twitter.com/oauth/access_token')
+			->params(array(
+				'oauth_consumer_key' => $consumer->key,
+				'oauth_token'        => $token->token,
+				'oauth_verifier'     => $token->verifier,
+			));
+
+		// Sign the request using only the consumer, no token is available yet
+		$request->sign($this->signature, $consumer, $token);
+
+		// Create a response from the request
+		$response = $request->execute();
+
+		// Store this token somewhere useful
+		return OAuth_Token::factory('access', array(
+			'token'  => $response->param('oauth_token'),
+			'secret' => $response->param('oauth_token_secret'),
+		));
 	}
 
 } // End OAuth_Provider_Twitter

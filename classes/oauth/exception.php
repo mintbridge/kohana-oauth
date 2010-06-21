@@ -3,7 +3,7 @@
  * OAuth Exception
  *
  * @package    Kohana/OAuth
- * @package    Exceptions
+ * @category   Exceptions
  * @author     Kohana Team
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license

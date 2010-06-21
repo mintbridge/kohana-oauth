@@ -3,27 +3,31 @@
  * OAuth Provider
  *
  * @package    Kohana/OAuth
- * @package    Base
+ * @category   Provider
  * @author     Kohana Team
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
 abstract class OAuth_Provider {
 
-	public static function factory($name, OAuth_Consumer $consumer)
+	public static function factory($name, array $options = NULL)
 	{
 		$class = __CLASS__.'_'.$name;
 
-		return new $class($consumer);
+		return new $class($options);
 	}
 
-	protected $version = '1.0';
-
-	protected $consumer;
-
-	public function __construct(OAuth_Consumer $consumer)
+	public function __construct(array $options = NULL)
 	{
-		$this->consumer = $consumer;
+		if (isset($options['signature']))
+		{
+			$this->signature = $options['signature'];
+		}
+
+		if ( ! is_object($this->signature))
+		{
+			$this->signature = OAuth_Signature::factory($this->signature);
+		}
 	}
 
 	public function __get($key)
@@ -31,14 +35,8 @@ abstract class OAuth_Provider {
 		return $this->$key;
 	}
 
-	public function timestamp()
-	{
-		return time();
-	}
+	abstract public function request_token(OAuth_Consumer $consumer);
 
-	public function nonce()
-	{
-		return Text::random('alnum', 20);
-	}
+	abstract public function access_token(OAuth_Consumer $consumer, OAuth_Token $token);
 
 } // End OAuth_Signature

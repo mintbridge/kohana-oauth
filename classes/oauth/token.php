@@ -8,7 +8,14 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Token {
+abstract class OAuth_Token {
+
+	public static function factory($name, array $options = NULL)
+	{
+		$class = __CLASS__.'_'.$name;
+
+		return new $class($options);
+	}
 
 	protected $token;
 
@@ -36,6 +43,11 @@ class OAuth_Token {
 	public function __get($key)
 	{
 		return $this->$key;
+	}
+
+	public function __set($key, $value)
+	{
+		$this->$key = $value;
 	}
 
 } // End OAuth_Token

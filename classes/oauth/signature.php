@@ -3,61 +3,74 @@
  * OAuth Signature
  *
  * @package    Kohana/OAuth
- * @package    Base
+ * @category   Signature
  * @author     Kohana Team
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
 abstract class OAuth_Signature {
 
+	/**
+	 * Create a new signature object by name.
+	 *
+	 *     $signature = OAuth_Signature::factory('HMAC-SHA1');
+	 *
+	 * @param   string  signature name: HMAC-SHA1, PLAINTEXT, etc
+	 * @param   array   signature options
+	 * @return  OAuth_Signature
+	 */
 	public static function factory($name, array $options = NULL)
 	{
+		// Create the class name as a base of this class
 		$class = __CLASS__.'_'.str_replace('-', '_', $name);
 
 		return new $class($options);
 	}
 
+	/**
+	 * @var  string  signature name: HMAC-SHA1, PLAINTEXT, etc
+	 */
 	protected $name;
 
+	/**
+	 * Return the value of any protected class variables.
+	 *
+	 *     $name = $signature->name;
+	 *
+	 * @param   string  variable name
+	 * @return  mixed
+	 */
 	public function __get($key)
 	{
 		return $this->$key;
 	}
 
-	public function base(OAuth_Request $request, OAuth_Consumer $consumer, OAuth_Token $token = NULL)
+	/**
+	 * Get a signing key from a consumer and token.
+	 *
+	 *     $key = $signature->key($consumer, $token);
+	 *
+	 * [!!] This method implements the signing key of [OAuth 1.0 Spec 9](http://oauth.net/core/1.0/#rfc.section.9).
+	 *
+	 * @param   OAuth_Consumer  consumer
+	 * @param   OAuth_Token     token
+	 * @return  string
+	 * @uses    OAuth::urlencode
+	 */
+	public function key(OAuth_Consumer $consumer, OAuth_Token $token = NULL)
 	{
-		$params = $request->params;
-
-		// oauth_signature is never included in the base string!
-		unset($params['oauth_signature']);
-
-		// method & url & sorted-parameters
-		return implode('&', array(
-			$request->method,
-			OAuth::urlencode($request->url),
-			OAuth::urlencode(OAuth::build_query($params)),
-		));
-	}
-
-	public function secrets(OAuth_Consumer $consumer, OAuth_Token $token = NULL)
-	{
-		$base = OAuth::urlencode($consumer->secret).'&';
+		$key = OAuth::urlencode($consumer->secret).'&';
 
 		if ($token)
 		{
-			$base .= OAuth::urlencode($token->secret);
+			$key .= OAuth::urlencode($token->secret);
 		}
 
-		return $base;
+		return $key;
 	}
 
-	abstract public function sign($data, OAuth_Consumer $consumer, OAuth_Token $token);
+	abstract public function sign(OAuth_Request $request, OAuth_Consumer $consumer, OAuth_Token $token = NULL);
 
-	public function verify($signature, $data, OAuth_Consumer $consumer, OAuth_Token $token)
-	{
-		return $signature === $this->sign($data, $consumer, $token);
-	}
-
-
+	abstract public function verify($signature, OAuth_Request $request, OAuth_Consumer $consumer, OAuth_Token $token = NULL);
 
 } // End OAuth_Signature

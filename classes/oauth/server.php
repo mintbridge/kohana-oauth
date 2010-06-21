@@ -3,7 +3,7 @@
  * OAuth Server
  *
  * @package    Kohana/OAuth
- * @package    Base
+ * @package    Server
  * @author     Kohana Team
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license

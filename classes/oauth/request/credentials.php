@@ -1,18 +1,15 @@
 <?php defined('SYSPATH') OR die('No direct access allowed.');
 /**
- * OAuth Request Credentials
+ * OAuth Credentials Request
  *
- * @package    OAuth
- * @author     Paul Dixon
- * @copyright  (c) 2010 Paul Dixon
- * @license    http://kohanaphp.com/license.html
+ * @package    Kohana/OAuth
+ * @category   Request
+ * @author     Kohana Team
+ * @copyright  (c) 2010 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
 class OAuth_Request_Credentials extends OAuth_Request{
 
-	protected var $oauth_callback = NULL;
-	
-	public function __construct()
-	{
-		
-	}
+
+
 } // End OAuth_Request_Credentials
