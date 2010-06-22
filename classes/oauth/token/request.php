@@ -6,4 +6,9 @@ class OAuth_Token_Request extends OAuth_Token {
 
 	protected $verifier;
 
+	public function verifier($verifier)
+	{
+		$this->verifier = $verifier;
+	}
+
 } // End OAuth_Token_Request

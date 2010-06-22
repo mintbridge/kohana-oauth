@@ -45,9 +45,4 @@ abstract class OAuth_Token {
 		return $this->$key;
 	}
 
-	public function __set($key, $value)
-	{
-		$this->$key = $value;
-	}
-
 } // End OAuth_Token

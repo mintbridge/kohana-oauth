@@ -12,52 +12,27 @@ class OAuth_Provider_Twitter extends OAuth_Provider {
 
 	protected $signature = 'HMAC-SHA1';
 
-	public function request_token(OAuth_Consumer $consumer)
+	protected $urls = array(
+		'token'     => 'https://api.twitter.com/oauth/request_token',
+		'authorize' => 'https://api.twitter.com/oauth/authorize',
+		'access'    => 'https://api.twitter.com/oauth/access_token',
+	);
+
+	public function status_update(OAuth_Consumer $consumer, OAuth_Token_Access $token, $status, $format = 'json')
 	{
-		$request = OAuth_Request::factory('token', 'https://api.twitter.com/oauth/request_token')
-			->params(array(
-				'oauth_consumer_key' => $consumer->key,
-				'oauth_callback'     => $consumer->callback,
-			));
-
-		// Sign the request using only the consumer, no token is available yet
-		$request->sign($this->signature, $consumer);
-
-		// Create a response from the request
-		$response = $request->execute();
-
-		// Store this token somewhere useful
-		return OAuth_Token::factory('request', array(
-			'token'  => $response->param('oauth_token'),
-			'secret' => $response->param('oauth_token_secret'),
+		$request = OAuth_Request::factory('resource', 'POST', "https://api.twitter.com/1/statuses/update.{$format}", array(
+			'oauth_consumer_key' => $consumer->key,
+			'oauth_token'        => $token->token,
 		));
-	}
 
-	public function authorize_url(OAuth_Token $token)
-	{
-		return 'https://api.twitter.com/oauth/authorize?oauth_token='.OAuth::urlencode($token->token);
-	}
-
-	public function access_token(OAuth_Consumer $consumer, OAuth_Token $token)
-	{
-		$request = OAuth_Request::factory('access', 'https://api.twitter.com/oauth/access_token')
-			->params(array(
-				'oauth_consumer_key' => $consumer->key,
-				'oauth_token'        => $token->token,
-				'oauth_verifier'     => $token->verifier,
-			));
+		// Add "status" to the POST body
+		$request->post('status', $status);
 
 		// Sign the request using only the consumer, no token is available yet
 		$request->sign($this->signature, $consumer, $token);
 
-		// Create a response from the request
-		$response = $request->execute();
-
-		// Store this token somewhere useful
-		return OAuth_Token::factory('access', array(
-			'token'  => $response->param('oauth_token'),
-			'secret' => $response->param('oauth_token_secret'),
-		));
+		// Return the response
+		return $request->execute();
 	}
 
 } // End OAuth_Provider_Twitter

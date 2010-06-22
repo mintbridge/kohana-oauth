@@ -83,6 +83,7 @@ abstract class OAuth {
 	 *
 	 * @param   array   request parameters
 	 * @return  string
+	 * @uses    OAuth::urlencode
 	 */
 	public static function normalize_params(array $params)
 	{
@@ -120,6 +121,51 @@ abstract class OAuth {
 		}
 
 		return implode('&', $query);
+	}
+
+	public static function normalize_post(array $params)
+	{
+		$query = array();
+
+		foreach ($params as $field => $value)
+		{
+			$query[] = $field.'='.$value;
+		}
+
+		return implode('&', $query);
+	}
+
+	/**
+	 * Parse the query string out of the URL and return it as parameters.
+	 * All GET parameters must be removed from the request URL when building
+	 * the base string and added to the request parameters.
+	 *
+	 *     // parsed parameters: array('oauth_key' => 'abcdef123456789')
+	 *     list($url, $params) = OAuth::parse_url('http://example.com/oauth/access?oauth_key=abcdef123456789');
+	 *
+	 * [!!] This implements [OAuth Spec 9.1.1](http://oauth.net/core/1.0/#rfc.section.9.1.1).
+	 *
+	 * @param   string  URL to parse
+	 * @return  array   (clean_url, params)
+	 * @uses    OAuth::parse_params
+	 */
+	public static function parse_url($url)
+	{
+		if ($query = parse_url($url, PHP_URL_QUERY))
+		{
+			// Remove the query string from the URL
+			list($url) = explode('?', $url, 2);
+
+			// Parse the query string as request parameters
+			$params = OAuth::parse_params($query);
+		}
+		else
+		{
+			// No parameters are present
+			$params = array();
+		}
+
+		return array($url, $params);
 	}
 
 	/**

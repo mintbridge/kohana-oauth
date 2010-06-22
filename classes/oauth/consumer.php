@@ -50,4 +50,9 @@ class OAuth_Consumer {
 		return $this->$key;
 	}
 
+	public function callback($callback)
+	{
+		$this->callback = $callback;
+	}
+
 } // End OAuth_Consumer

@@ -21,4 +21,9 @@ class OAuth_Request_Token extends OAuth_Request {
 		'oauth_nonce',
 	);
 
+	public function execute(array $options = NULL)
+	{
+		return OAuth_Response::factory(parent::execute($options));
+	}
+
 } // End OAuth_Request_Token

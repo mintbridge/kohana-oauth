@@ -19,12 +19,22 @@ class OAuth_Request {
 	 * @param   array   request parameters
 	 * @return  OAuth_Request
 	 */
-	public static function factory($type, $url, $method = NULL, array $params = NULL)
+	public static function factory($type, $method, $url = NULL, array $params = NULL)
 	{
 		$class = __CLASS__.'_'.$type;
 
-		return new $class($url, $method, $params);
+		return new $class($method, $url, $params);
 	}
+
+	/**
+	 * @var  integer  connection timeout
+	 */
+	public $timeout = 10;
+
+	/**
+	 * @var  boolean  send Authorization header?
+	 */
+	public $send_header = TRUE;
 
 	/**
 	 * @var  string  request method: GET, POST, etc
@@ -47,41 +57,60 @@ class OAuth_Request {
 	protected $required = array();
 
 	/**
+	 * @var  array  POST body
+	 */
+	protected $post = array();
+
+	/**
 	 * Set the request URL, method, and parameters.
 	 *
 	 * @param  string  request method
 	 * @param  string  request URL
 	 * @param  array   request parameters
+	 * @uses   OAuth::parse_url
 	 */
-	public function __construct($url, $method = NULL, array $params = NULL)
+	public function __construct($method, $url, array $params = NULL)
 	{
-		// Set the request URL
-		$this->url = $url;
-
 		if ($method)
 		{
 			// Set the request method
 			$this->method = strtoupper($method);
 		}
 
+		// Separate the URL and query string, which will be used as additional
+		// default parameters
+		list ($url, $default) = OAuth::parse_url($url);
+
+		// Set the request URL
+		$this->url = $url;
+
+		if ($default)
+		{
+			// Set the default parameters
+			$this->params($default);
+		}
+
 		if ($params)
 		{
-			// Overwrite existing parameters
-			$this->params = array_merge($this->params, $params);
+			// Set the request parameters
+			$this->params($params);
 		}
 
 		if ( ! isset($this->params['oauth_version']))
 		{
+			// Always include the OAuth version, even though it is optional
 			$this->params['oauth_version'] = OAuth::$version;
 		}
 
 		if ( ! isset($this->params['oauth_timestamp']))
 		{
+			// Set the timestamp of this request
 			$this->params['oauth_timestamp'] = $this->timestamp();
 		}
 
 		if ( ! isset($this->params['oauth_nonce']))
 		{
+			// Set the unique nonce of this request
 			$this->params['oauth_nonce'] = $this->nonce();
 		}
 	}
@@ -142,12 +171,21 @@ class OAuth_Request {
 	 * @param   OAuth_Request   request to sign
 	 * @return  string
 	 * @uses    OAuth::urlencode
-	 * @uses    OAuth::build_query
+	 * @uses    OAuth::normalize_post
+	 * @uses    OAuth::normalize_params
 	 */
 	public function base_string()
 	{
+		$url = $this->url;
+
 		// Get the request parameters
 		$params = $this->params;
+
+		if ($this->post)
+		{
+			// Add the POST fields to the parameters
+			$params += $this->post;
+		}
 
 		// "oauth_signature" is never included in the base string!
 		unset($params['oauth_signature']);
@@ -155,7 +193,7 @@ class OAuth_Request {
 		// method & url & sorted-parameters
 		return implode('&', array(
 			$this->method,
-			OAuth::urlencode($this->url),
+			OAuth::urlencode($url),
 			OAuth::urlencode(OAuth::normalize_params($params)),
 		));
 	}
@@ -236,6 +274,30 @@ class OAuth_Request {
 	}
 
 	/**
+	 * Get and set POST fields. Adding a value will cause the request to be
+	 * sent with the HTTP POST method.
+	 *
+	 *     $request->post($field, $value);
+	 *
+	 * @param   string  field name
+	 * @param   string  field value
+	 * @return  string  when getting
+	 * @return  $this   when setting
+	 * @uses    Arr::get
+	 */
+	public function post($field, $value = NULL)
+	{
+		if (func_num_args() < 2)
+		{
+			return Arr::get($this->post, $field);
+		}
+
+		$this->post[$field] = $value;
+
+		return $this;
+	}
+
+	/**
 	 * Convert the request parameters into an `Authorization` header.
 	 *
 	 *     $header = $request->as_header();
@@ -250,9 +312,12 @@ class OAuth_Request {
 
 		foreach ($this->params as $name => $value)
 		{
-			// OAuth Spec 5.4.1
-			// "Parameter names and values are encoded per Parameter Encoding [RFC 3986]."
-			$header[] = OAuth::urlencode($name).'="'.OAuth::urlencode($value).'"';
+			if (substr($name, 0, 5) === 'oauth')
+			{
+				// OAuth Spec 5.4.1
+				// "Parameter names and values are encoded per Parameter Encoding [RFC 3986]."
+				$header[] = OAuth::urlencode($name).'="'.OAuth::urlencode($value).'"';
+			}
 		}
 
 		return 'OAuth '.implode(', ', $header);
@@ -335,7 +400,7 @@ class OAuth_Request {
 
 	/**
 	 * Execute the request and return a response.
-	 * 
+	 *
 	 * @param   string   request type: GET, POST, etc (NULL for header)
 	 * @param   array    additional cURL options
 	 * @return  OAuth_Response
@@ -343,7 +408,7 @@ class OAuth_Request {
 	 * @uses    Arr::get
 	 * @uses    Remote::get
 	 */
-	public function execute($type = NULL, array $options = NULL)
+	public function execute(array $options = NULL)
 	{
 		// Check that all required fields are set
 		$this->check();
@@ -351,33 +416,42 @@ class OAuth_Request {
 		// Get the URL of the request
 		$url = $this->url;
 
-		// Normalize the type
-		$type = strtolower($type);
-
-		switch ($type)
+		if ( ! isset($options[CURLOPT_CONNECTTIMEOUT]))
 		{
-			case 'get':
-				$url .= '?'.$this->as_query();
-			break;
-			case 'post':
-				// Make the request a POST with the fields attached
-				$options[CURLOPT_POST]       = TRUE;
-				$options[CURLOPT_POSTFIELDS] = $this->as_query();
-			break;
-			default:
-				// Get the the current headers
-				$headers = Arr::get($options, CURLOPT_HTTPHEADER, array());
-
-				// Add the Authorization header
-				$headers[] = 'Authorization: '.$this->as_header();
-
-				// Store the new headers
-				$options[CURLOPT_HTTPHEADER] = $headers;
-			break;
+			// Use the request default timeout
+			$options[CURLOPT_CONNECTTIMEOUT] = $this->timeout;
 		}
 
-		// Create a response from the remote request
-		return OAuth_Response::factory(Remote::get($url, $options));
+		if ($this->send_header)
+		{
+			// Get the the current headers
+			$headers = Arr::get($options, CURLOPT_HTTPHEADER, array());
+
+			// Add the Authorization header
+			$headers[] = 'Authorization: '.$this->as_header();
+
+			// Store the new headers
+			$options[CURLOPT_HTTPHEADER] = $headers;
+		}
+		elseif ($query = $this->as_query())
+		{
+			// Append the parameters to the query string
+			$url = "{$url}?{$query}";
+		}
+
+		if ($this->method === 'POST')
+		{
+			// Send the request as a POST
+			$options[CURLOPT_POST] = TRUE;
+
+			if ($this->post)
+			{
+				// Attach the post fields to the request
+				$options[CURLOPT_POSTFIELDS] = OAuth::normalize_post($this->post);
+			}
+		}
+
+		return Remote::get($url, $options);
 	}
 
 } // End OAuth_Request

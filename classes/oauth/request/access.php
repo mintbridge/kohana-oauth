@@ -22,4 +22,9 @@ class OAuth_Request_Access extends OAuth_Request {
 		'oauth_verifier',
 	);
 
+	public function execute(array $options = NULL)
+	{
+		return OAuth_Response::factory(parent::execute($options));
+	}
+
 } // End OAuth_Request_Access

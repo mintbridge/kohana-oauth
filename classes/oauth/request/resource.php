@@ -10,6 +10,8 @@
  */
 class OAuth_Request_Resource extends OAuth_Request{
 
+	protected $name = 'resource';
+
 	protected $required = array(
 		'oauth_consumer_key',
 		'oauth_token',

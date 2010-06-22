@@ -1,1 +1,0 @@
-<p><?php echo HTML::anchor(Route::get('oauth')->uri(array('controller' => 'twitter', 'action' => 'login')), 'Login Using Twitter') ?></p>
