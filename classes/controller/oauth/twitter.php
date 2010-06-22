@@ -26,7 +26,7 @@ class Controller_OAuth_Twitter extends Controller_OAuth {
 		{
 			$response = $this->provider->status_update($this->consumer, $this->token, $tweet);
 
-			$response = Kohana::debug($response);
+			$response = Kohana::debug(json_decode($response));
 		}
 	}
 
