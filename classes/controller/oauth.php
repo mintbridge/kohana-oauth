@@ -19,7 +19,7 @@ abstract class Controller_OAuth extends Controller {
 		$this->consumer = OAuth_Consumer::factory($config);
 
 		// Load the provider
-		$this->provider = OAuth_Provider::factory('twitter');
+		$this->provider = OAuth_Provider::factory($this->provider);
 
 		if ($token = Cookie::get('oauth_token'))
 		{
