@@ -28,6 +28,16 @@ abstract class OAuth_Provider {
 	}
 
 	/**
+	 * @var  array  end point URLs to be used for remote requests
+	 */
+	protected $urls = array();
+
+	/**
+	 * @var  array  additional request parameters to be used for remote requests
+	 */
+	protected $params = array();
+
+	/**
 	 * Overloads default class properties from the options.
 	 *
 	 * @param   array   provider options
@@ -72,10 +82,16 @@ abstract class OAuth_Provider {
 	 */
 	public function request_token(OAuth_Consumer $consumer)
 	{
-		$request = OAuth_Request::factory('token', 'GET', $this->urls['token'], array(
+		$request = OAuth_Request::factory('token', 'GET', $this->urls['request_token'], array(
 			'oauth_consumer_key' => $consumer->key,
 			'oauth_callback'     => $consumer->callback,
 		));
+
+		if (isset($this->params['request_token']))
+		{
+			// Load additional provider parameters
+			$request->params($this->params['request_token']);
+		}
 
 		// Sign the request using only the consumer, no token is available yet
 		$request->sign($this->signature, $consumer);
@@ -100,11 +116,17 @@ abstract class OAuth_Provider {
 	 */
 	public function authorize_url(OAuth_Token_Request $token)
 	{
-		$query = OAuth::normalize_params(array(
+		$params = array(
 			'oauth_token' => $token->token,
-		));
+		);
 
-		return $this->urls['authorize'].'?'.$query;
+		if (isset($this->params['authorize_url']))
+		{
+			// Load additional provider parameters
+			$params += $this->params['authorize_url'];
+		}
+
+		return $this->urls['authorize_url'].'?'.OAuth::normalize_params($params);
 	}
 
 	/**
@@ -123,6 +145,12 @@ abstract class OAuth_Provider {
 			'oauth_token'        => $token->token,
 			'oauth_verifier'     => $token->verifier,
 		));
+
+		if (isset($this->params['access_token']))
+		{
+			// Load additional provider parameters
+			$request->params($this->params['access_token']);
+		}
 
 		// Sign the request using only the consumer, no token is available yet
 		$request->sign($this->signature, $consumer, $token);
