@@ -140,7 +140,7 @@ abstract class OAuth_Provider {
 	 */
 	public function access_token(OAuth_Consumer $consumer, OAuth_Token_Request $token)
 	{
-		$request = OAuth_Request::factory('access', 'GET', $this->urls['access'], array(
+		$request = OAuth_Request::factory('access', 'GET', $this->urls['access_token'], array(
 			'oauth_consumer_key' => $consumer->key,
 			'oauth_token'        => $token->token,
 			'oauth_verifier'     => $token->verifier,
