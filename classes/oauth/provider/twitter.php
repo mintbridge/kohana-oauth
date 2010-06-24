@@ -13,9 +13,9 @@ class OAuth_Provider_Twitter extends OAuth_Provider {
 	protected $signature = 'HMAC-SHA1';
 
 	protected $urls = array(
-		'token'     => 'https://api.twitter.com/oauth/request_token',
-		'authorize' => 'https://api.twitter.com/oauth/authorize',
-		'access'    => 'https://api.twitter.com/oauth/access_token',
+		'request_token' => 'https://api.twitter.com/oauth/request_token',
+		'authorize_url' => 'https://api.twitter.com/oauth/authorize',
+		'access_token'  => 'https://api.twitter.com/oauth/access_token',
 	);
 
 	public function status_update(OAuth_Consumer $consumer, OAuth_Token_Access $token, $status, $format = 'json')
