@@ -8,13 +8,19 @@ class Controller_OAuth_Google extends Controller_OAuth {
 	{
 		if ($this->token AND $this->token->name === 'access')
 		{
-			echo Kohana::debug('access granted!');
-			// $this->request->response = Request::factory($this->request->uri(array('action' => 'profile')))->execute();
+			$this->request->response = Request::factory($this->request->uri(array('action' => 'profile')))->execute();
 		}
 		else
 		{
 			$this->request->response = HTML::anchor($this->request->uri(array('action' => 'login')), 'Login with Google');
 		}
+	}
+
+	public function action_profile()
+	{
+		$response = $this->provider->user_profile($this->consumer, $this->token);
+
+		echo Kohana::debug(json_decode((string) $response));
 	}
 
 } // End OAuth_Twitter
