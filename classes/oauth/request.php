@@ -312,12 +312,9 @@ class OAuth_Request {
 
 		foreach ($this->params as $name => $value)
 		{
-			if (substr($name, 0, 5) === 'oauth')
-			{
-				// OAuth Spec 5.4.1
-				// "Parameter names and values are encoded per Parameter Encoding [RFC 3986]."
-				$header[] = OAuth::urlencode($name).'="'.OAuth::urlencode($value).'"';
-			}
+			// OAuth Spec 5.4.1
+			// "Parameter names and values are encoded per Parameter Encoding [RFC 3986]."
+			$header[] = OAuth::urlencode($name).'="'.OAuth::urlencode($value).'"';
 		}
 
 		return 'OAuth '.implode(', ', $header);
