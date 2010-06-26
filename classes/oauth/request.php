@@ -56,6 +56,12 @@ class OAuth_Request {
 	 */
 	protected $required = array();
 
+	protected $default = array(
+		'oauth_version',
+		'oauth_timestamp',
+		''
+	);
+
 	/**
 	 * @var  array  POST body
 	 */
@@ -96,19 +102,19 @@ class OAuth_Request {
 			$this->params($params);
 		}
 
-		if ( ! isset($this->params['oauth_version']))
+		if (in_array('oauth_version', $this->required) AND ! isset($this->params['oauth_version']))
 		{
 			// Always include the OAuth version, even though it is optional
 			$this->params['oauth_version'] = OAuth::$version;
 		}
 
-		if ( ! isset($this->params['oauth_timestamp']))
+		if (in_array('oauth_timestamp', $this->required) AND ! isset($this->params['oauth_timestamp']))
 		{
 			// Set the timestamp of this request
 			$this->params['oauth_timestamp'] = $this->timestamp();
 		}
 
-		if ( ! isset($this->params['oauth_nonce']))
+		if (in_array('oauth_nonce', $this->required) AND ! isset($this->params['oauth_nonce']))
 		{
 			// Set the unique nonce of this request
 			$this->params['oauth_nonce'] = $this->nonce();
