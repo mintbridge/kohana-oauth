@@ -77,11 +77,13 @@ abstract class OAuth_Provider {
 	 *     $token = $provider->request_token($consumer);
 	 *
 	 * @param   OAuth_Consumer  consumer
+	 * @param   array           additional request parameters
 	 * @return  OAuth_Token_Request
 	 * @uses    OAuth_Request_Token
 	 */
-	public function request_token(OAuth_Consumer $consumer)
+	public function request_token(OAuth_Consumer $consumer, array $params = NULL)
 	{
+		// Create a new GET request for a request token with the required parameters
 		$request = OAuth_Request::factory('token', 'GET', $this->urls['request_token'], array(
 			'oauth_consumer_key' => $consumer->key,
 			'oauth_callback'     => $consumer->callback,
@@ -91,6 +93,12 @@ abstract class OAuth_Provider {
 		{
 			// Load additional provider parameters
 			$request->params($this->params['request_token']);
+		}
+
+		if ($params)
+		{
+			// Load user parameters
+			$request->params($params);
 		}
 
 		// Sign the request using only the consumer, no token is available yet
@@ -112,21 +120,29 @@ abstract class OAuth_Provider {
 	 *     $this->request->redirect($provider->authorize_url($token));
 	 *
 	 * @param   OAuth_Token_Request  token
+	 * @param   array                additional request parameters
 	 * @return  string
 	 */
-	public function authorize_url(OAuth_Token_Request $token)
+	public function authorize_url(OAuth_Token_Request $token, array $params = NULL)
 	{
-		$params = array(
+		// Create a new GET request for a request token with the required parameters
+		$request = OAuth_Request::factory('authorize', 'GET', $this->urls['authorize_url'], array(
 			'oauth_token' => $token->token,
-		);
+		));
 
 		if (isset($this->params['authorize_url']))
 		{
 			// Load additional provider parameters
-			$params += $this->params['authorize_url'];
+			$request->params($this->params['authorize_url']);
 		}
 
-		return $this->urls['authorize_url'].'?'.OAuth::normalize_params($params);
+		if ($params)
+		{
+			// Load user parameters
+			$request->params($params);
+		}
+
+		return $request->as_url();
 	}
 
 	/**
@@ -136,10 +152,12 @@ abstract class OAuth_Provider {
 	 *
 	 * @param   OAuth_Consumer       consumer
 	 * @param   OAuth_Token_Request  token
+	 * @param   array                additional request parameters
 	 * @return  OAuth_Token_Access
 	 */
-	public function access_token(OAuth_Consumer $consumer, OAuth_Token_Request $token)
+	public function access_token(OAuth_Consumer $consumer, OAuth_Token_Request $token, array $params = NULL)
 	{
+		// Create a new GET request for a request token with the required parameters
 		$request = OAuth_Request::factory('access', 'GET', $this->urls['access_token'], array(
 			'oauth_consumer_key' => $consumer->key,
 			'oauth_token'        => $token->token,
@@ -150,6 +168,12 @@ abstract class OAuth_Provider {
 		{
 			// Load additional provider parameters
 			$request->params($this->params['access_token']);
+		}
+
+		if ($params)
+		{
+			// Load user parameters
+			$request->params($params);
 		}
 
 		// Sign the request using only the consumer, no token is available yet
