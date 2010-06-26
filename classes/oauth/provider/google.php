@@ -1,6 +1,14 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * OAuth Twitter Provider
+ * OAuth Google Provider
+ *
+ * Documents for implementing Google OAuth can be found at
+ * <http://code.google.com/apis/accounts/docs/OAuth.html>.
+ * Individual Google APIs have separate documentation. A complete list is
+ * available at <http://code.google.com/more/>.
+ *
+ * [!!] This class does not implement any Google API. It is only an
+ * implementation of standard OAuth with Google as the service provider.
  *
  * @package    Kohana/OAuth
  * @category   Provider

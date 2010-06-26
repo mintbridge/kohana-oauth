@@ -13,13 +13,14 @@ class OAuth_Request_Access extends OAuth_Request {
 	protected $name = 'access';
 
 	protected $required = array(
-		'oauth_consumer_key',
-		'oauth_token',
-		'oauth_signature_method',
-		'oauth_signature',
-		'oauth_timestamp',
-		'oauth_nonce',
-		'oauth_verifier',
+		'oauth_consumer_key'     => TRUE,
+		'oauth_token'            => TRUE,
+		'oauth_signature_method' => TRUE,
+		'oauth_signature'        => TRUE,
+		'oauth_timestamp'        => TRUE,
+		'oauth_nonce'            => TRUE,
+		'oauth_verifier'         => TRUE,
+		'oauth_version'          => TRUE,
 	);
 
 	public function execute(array $options = NULL)

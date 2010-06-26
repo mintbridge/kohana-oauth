@@ -13,7 +13,7 @@ class OAuth_Request_Authorize extends OAuth_Request{
 	protected $name = 'request';
 
 	protected $required = array(
-		'oauth_token',
+		'oauth_token' => TRUE,
 	);
 
 	public function execute(array $options = NULL)

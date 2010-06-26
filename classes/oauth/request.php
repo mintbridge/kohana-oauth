@@ -102,19 +102,19 @@ class OAuth_Request {
 			$this->params($params);
 		}
 
-		if (in_array('oauth_version', $this->required) AND ! isset($this->params['oauth_version']))
+		if ($this->required('oauth_version') AND ! isset($this->params['oauth_version']))
 		{
 			// Always include the OAuth version, even though it is optional
 			$this->params['oauth_version'] = OAuth::$version;
 		}
 
-		if (in_array('oauth_timestamp', $this->required) AND ! isset($this->params['oauth_timestamp']))
+		if ($this->required('oauth_timestamp') AND ! isset($this->params['oauth_timestamp']))
 		{
 			// Set the timestamp of this request
 			$this->params['oauth_timestamp'] = $this->timestamp();
 		}
 
-		if (in_array('oauth_nonce', $this->required) AND ! isset($this->params['oauth_nonce']))
+		if ($this->required('oauth_nonce') AND ! isset($this->params['oauth_nonce']))
 		{
 			// Set the unique nonce of this request
 			$this->params['oauth_nonce'] = $this->nonce();
@@ -304,6 +304,29 @@ class OAuth_Request {
 	}
 
 	/**
+	 * Get and set required parameters.
+	 *
+	 *     $request->required($field, $value);
+	 *
+	 * @param   string   parameter name
+	 * @param   boolean  field value
+	 * @return  boolean  when getting
+	 * @return  $this    when setting
+	 */
+	public function required($param, $value = NULL)
+	{
+		if ($value === NULL)
+		{
+			return ! empty($this->required[$param]);
+		}
+
+		// Change the requirement value
+		$this->required[$param] = (boolean) $value;
+
+		return $this;
+	}
+
+	/**
 	 * Convert the request parameters into an `Authorization` header.
 	 *
 	 *     $header = $request->as_header();
@@ -384,17 +407,14 @@ class OAuth_Request {
 	 */
 	public function check()
 	{
-		if ($this->required)
+		foreach ($this->required as $param => $required)
 		{
-			foreach ($this->required as $param)
+			if ($required AND ! isset($this->params[$param]))
 			{
-				if ( ! isset($this->params[$param]))
-				{
-					throw new OAuth_Exception('Request to :url requires missing parameter ":param"', array(
-						':url'   => $this->url,
-						':param' => $param,
-					));
-				}
+				throw new OAuth_Exception('Request to :url requires missing parameter ":param"', array(
+					':url'   => $this->url,
+					':param' => $param,
+				));
 			}
 		}
 
