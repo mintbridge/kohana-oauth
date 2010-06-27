@@ -3,7 +3,7 @@
  * OAuth Request Token
  *
  * @package    Kohana/OAuth
- * @package    Token
+ * @category   Token
  * @author     Kohana Team
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
