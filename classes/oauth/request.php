@@ -39,6 +39,11 @@ class OAuth_Request {
 	public $send_header = TRUE;
 
 	/**
+	 * @var  string  request type name: token, authorize, access, resource
+	 */
+	protected $name;
+
+	/**
 	 * @var  string  request method: GET, POST, etc
 	 */
 	protected $method = 'GET';
