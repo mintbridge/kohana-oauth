@@ -13,6 +13,8 @@ class OAuth_Request {
 	/**
 	 * Create a new request object.
 	 *
+	 *     $request = OAuth_Request::factory('token', 'http://example.com/oauth/request_token');
+	 *
 	 * @param   string  request type
 	 * @param   string  request URL
 	 * @param   string  request method
@@ -56,12 +58,6 @@ class OAuth_Request {
 	 */
 	protected $required = array();
 
-	protected $default = array(
-		'oauth_version',
-		'oauth_timestamp',
-		''
-	);
-
 	/**
 	 * @var  array  POST body
 	 */
@@ -104,7 +100,7 @@ class OAuth_Request {
 
 		if ($this->required('oauth_version') AND ! isset($this->params['oauth_version']))
 		{
-			// Always include the OAuth version, even though it is optional
+			// Set the version of this request
 			$this->params['oauth_version'] = OAuth::$version;
 		}
 
@@ -364,7 +360,15 @@ class OAuth_Request {
 		return OAuth::normalize_params($this->params);
 	}
 
-	public function as_url($value='')
+	/**
+	 * Return the entire request URL with the parameters as a GET string.
+	 *
+	 *     $url = $request->as_url();
+	 *
+	 * @return  string
+	 * @uses    OAuth_Request::as_query
+	 */
+	public function as_url()
 	{
 		return $this->url.'?'.$this->as_query();
 	}
@@ -426,7 +430,7 @@ class OAuth_Request {
 	 *
 	 * @param   string   request type: GET, POST, etc (NULL for header)
 	 * @param   array    additional cURL options
-	 * @return  OAuth_Response
+	 * @return  string   request response body
 	 * @uses    OAuth_Request::check
 	 * @uses    Arr::get
 	 * @uses    Remote::get
