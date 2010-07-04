@@ -13,6 +13,7 @@
  * @author     Kohana Team
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
+ * @since      3.0.7
  */
 class Kohana_OAuth_Provider_Twitter extends OAuth_Provider {
 

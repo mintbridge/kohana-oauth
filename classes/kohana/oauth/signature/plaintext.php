@@ -8,6 +8,7 @@
  * @author     Kohana Team
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
+ * @since      3.0.7
  */
 class Kohana_OAuth_Signature_PLAINTEXT extends OAuth_Signature {
 
