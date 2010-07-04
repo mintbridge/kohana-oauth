@@ -8,7 +8,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-abstract class OAuth_Signature {
+abstract class Kohana_OAuth_Signature {
 
 	/**
 	 * Create a new signature object by name.

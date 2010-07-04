@@ -8,7 +8,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Response {
+class Kohana_OAuth_Response {
 
 	public static function factory($body)
 	{

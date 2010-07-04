@@ -8,7 +8,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Consumer {
+class Kohana_OAuth_Consumer {
 
 	/**
 	 * Create a new consumer object.
@@ -48,13 +48,13 @@ class OAuth_Consumer {
 	{
 		if ( ! isset($options['key']))
 		{
-			throw new OAuth_Exception('Required option not passed: :option',
+			throw new Kohana_OAuth_Exception('Required option not passed: :option',
 				array(':option' => 'key'));
 		}
 
 		if ( ! isset($options['secret']))
 		{
-			throw new OAuth_Exception('Required option not passed: :option',
+			throw new Kohana_OAuth_Exception('Required option not passed: :option',
 				array(':option' => 'secret'));
 		}
 

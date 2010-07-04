@@ -8,6 +8,6 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-abstract class OAuth_Server {
+abstract class Kohana_OAuth_Server {
 
 } // End OAuth_Server

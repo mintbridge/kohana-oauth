@@ -8,7 +8,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-abstract class OAuth_Provider {
+abstract class Kohana_OAuth_Provider {
 
 	/**
 	 * Create a new provider.

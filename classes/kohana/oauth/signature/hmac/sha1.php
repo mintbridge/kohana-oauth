@@ -11,7 +11,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Signature_HMAC_SHA1 extends OAuth_Signature {
+class Kohana_OAuth_Signature_HMAC_SHA1 extends OAuth_Signature {
 
 	protected $name = 'HMAC-SHA1';
 
@@ -47,7 +47,7 @@ class OAuth_Signature_HMAC_SHA1 extends OAuth_Signature {
 	 *
 	 *     if ( ! $signature->verify($signature, $request, $consumer, $token))
 	 *     {
-	 *         throw new OAuth_Exception('Failed to verify signature');
+	 *         throw new Kohana_OAuth_Exception('Failed to verify signature');
 	 *     }
 	 *
 	 * [!!] This method implements [OAuth 1.0 Spec 9.2.2](http://oauth.net/core/1.0/#rfc.section.9.2.2).

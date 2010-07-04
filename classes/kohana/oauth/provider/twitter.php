@@ -14,7 +14,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Provider_Twitter extends OAuth_Provider {
+class Kohana_OAuth_Provider_Twitter extends OAuth_Provider {
 
 	protected $signature = 'HMAC-SHA1';
 

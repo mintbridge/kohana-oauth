@@ -16,7 +16,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Provider_Google extends OAuth_Provider {
+class Kohana_OAuth_Provider_Google extends OAuth_Provider {
 
 	protected $signature = 'HMAC-SHA1';
 
@@ -26,7 +26,7 @@ class OAuth_Provider_Google extends OAuth_Provider {
 		{
 			// All request tokens must specify the data scope to access
 			// http://code.google.com/apis/accounts/docs/OAuth.html#prepScope
-			throw new OAuth_Exception('Required parameter to not passed: :param', array(
+			throw new Kohana_OAuth_Exception('Required parameter to not passed: :param', array(
 				':param' => 'scope';
 			));
 		}

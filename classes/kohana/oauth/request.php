@@ -8,7 +8,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Request {
+class Kohana_OAuth_Request {
 
 	/**
 	 * Create a new request object.
@@ -412,7 +412,7 @@ class OAuth_Request {
 	 *     }
 	 *
 	 * @return  TRUE
-	 * @throws  OAuth_Exception
+	 * @throws  Kohana_OAuth_Exception
 	 */
 	public function check()
 	{
@@ -420,7 +420,7 @@ class OAuth_Request {
 		{
 			if ($required AND ! isset($this->params[$param]))
 			{
-				throw new OAuth_Exception('Request to :url requires missing parameter ":param"', array(
+				throw new Kohana_OAuth_Exception('Request to :url requires missing parameter ":param"', array(
 					':url'   => $this->url,
 					':param' => $param,
 				));

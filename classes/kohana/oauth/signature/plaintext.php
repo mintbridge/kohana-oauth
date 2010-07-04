@@ -9,7 +9,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Signature_PLAINTEXT extends OAuth_Signature {
+class Kohana_OAuth_Signature_PLAINTEXT extends OAuth_Signature {
 
 	protected $name = 'PLAINTEXT';
 
@@ -36,7 +36,7 @@ class OAuth_Signature_PLAINTEXT extends OAuth_Signature {
 	 *
 	 *     if ( ! $signature->verify($signature, $request, $consumer, $token))
 	 *     {
-	 *         throw new OAuth_Exception('Failed to verify signature');
+	 *         throw new Kohana_OAuth_Exception('Failed to verify signature');
 	 *     }
 	 *
 	 * [!!] This method implements [OAuth 1.0 Spec 9.4.2](http://oauth.net/core/1.0/#rfc.section.9.4.2).

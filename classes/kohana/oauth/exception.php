@@ -8,4 +8,4 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Exception extends Kohana_Exception {  }
+class Kohana_OAuth_Exception extends Kohana_Exception {  }

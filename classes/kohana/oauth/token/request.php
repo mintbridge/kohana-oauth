@@ -8,7 +8,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class OAuth_Token_Request extends OAuth_Token {
+class Kohana_OAuth_Token_Request extends OAuth_Token {
 
 	protected $name = 'request';
 

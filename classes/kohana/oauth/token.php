@@ -8,7 +8,7 @@
  * @copyright  (c) 2010 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-abstract class OAuth_Token {
+abstract class Kohana_OAuth_Token {
 
 	/**
 	 * Create a new token object.
@@ -51,13 +51,13 @@ abstract class OAuth_Token {
 	{
 		if ( ! isset($options['token']))
 		{
-			throw new OAuth_Exception('Required option not passed: :option',
+			throw new Kohana_OAuth_Exception('Required option not passed: :option',
 				array(':option' => 'token'));
 		}
 
 		if ( ! isset($options['secret']))
 		{
-			throw new OAuth_Exception('Required option not passed: :option',
+			throw new Kohana_OAuth_Exception('Required option not passed: :option',
 				array(':option' => 'secret'));
 		}
 
