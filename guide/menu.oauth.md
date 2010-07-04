@@ -2,4 +2,3 @@
    - [About](oauth.about)
    - [Configuration](oauth.config)
    - [Usage](oauth.usage)
-   - [Examples](oauth.examples)
