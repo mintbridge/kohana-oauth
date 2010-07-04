@@ -20,30 +20,18 @@ class OAuth_Provider_Google extends OAuth_Provider {
 
 	protected $signature = 'HMAC-SHA1';
 
-	protected $urls = array(
-		'request_token' => 'https://www.google.com/accounts/OAuthGetRequestToken',
-		'authorize_url' => 'https://www.google.com/accounts/OAuthAuthorizeToken',
-		'access_token'  => 'https://www.google.com/accounts/OAuthGetAccessToken',
-	);
-
-	protected $params = array(
-		'request_token' => array(
-			'scope' => 'http://www-opensocial.googleusercontent.com/api/people/',
-		),
-	);
-
-	public function user_profile(OAuth_Consumer $consumer, OAuth_Token_Access $token, $format = 'json')
+	public function request_token(OAuth_Consumer $consumer, array $params = NULL)
 	{
-		$request = OAuth_Request::factory('resource', 'GET', "http://www-opensocial.googleusercontent.com/api/people/@me/@self", array(
-			'oauth_consumer_key' => $consumer->key,
-			'oauth_token'        => $token->token,
-		));
+		if ( ! isset($params['scope']))
+		{
+			// All request tokens must specify the data scope to access
+			// http://code.google.com/apis/accounts/docs/OAuth.html#prepScope
+			throw new OAuth_Exception('Required parameter to not passed: :param', array(
+				':param' => 'scope';
+			));
+		}
 
-		// Sign the request using only the consumer, no token is available yet
-		$request->sign($this->signature, $consumer, $token);
-
-		// Return the response
-		return $request->execute();
+		return parent::request_token($consumer, $params);
 	}
 
 } // End OAuth_Provider_Google

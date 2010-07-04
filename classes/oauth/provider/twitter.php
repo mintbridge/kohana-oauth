@@ -2,6 +2,12 @@
 /**
  * OAuth Twitter Provider
  *
+ * Documents for implementing Twitter OAuth can be found at
+ * <http://dev.twitter.com/pages/auth>.
+ *
+ * [!!] This class does not implement the Twitter API. It is only an
+ * implementation of standard OAuth with Twitter as the service provider.
+ *
  * @package    Kohana/OAuth
  * @category   Provider
  * @author     Kohana Team
@@ -12,27 +18,19 @@ class OAuth_Provider_Twitter extends OAuth_Provider {
 
 	protected $signature = 'HMAC-SHA1';
 
-	protected $urls = array(
-		'request_token' => 'https://api.twitter.com/oauth/request_token',
-		'authorize_url' => 'https://api.twitter.com/oauth/authorize',
-		'access_token'  => 'https://api.twitter.com/oauth/access_token',
-	);
-
-	public function status_update(OAuth_Consumer $consumer, OAuth_Token_Access $token, $status, $format = 'json')
+	public function url_request_token()
 	{
-		$request = OAuth_Request::factory('resource', 'POST', "https://api.twitter.com/1/statuses/update.{$format}", array(
-			'oauth_consumer_key' => $consumer->key,
-			'oauth_token'        => $token->token,
-		));
+		return 'https://api.twitter.com/oauth/request_token';
+	}
 
-		// Add "status" to the POST body
-		$request->post('status', $status);
+	public function url_authorize()
+	{
+		return 'https://api.twitter.com/oauth/authenticate';
+	}
 
-		// Sign the request using only the consumer, no token is available yet
-		$request->sign($this->signature, $consumer, $token);
-
-		// Return the response
-		return $request->execute();
+	public function url_access_token()
+	{
+		return 'https://api.twitter.com/oauth/access_token';
 	}
 
 } // End OAuth_Provider_Twitter

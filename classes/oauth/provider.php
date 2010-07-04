@@ -28,11 +28,6 @@ abstract class OAuth_Provider {
 	}
 
 	/**
-	 * @var  array  end point URLs to be used for remote requests
-	 */
-	protected $urls = array();
-
-	/**
 	 * @var  array  additional request parameters to be used for remote requests
 	 */
 	protected $params = array();
@@ -40,7 +35,14 @@ abstract class OAuth_Provider {
 	/**
 	 * Overloads default class properties from the options.
 	 *
+	 * Any of the provider options can be set here:
+	 *
+	 * Type      | Option        | Description                                    | Default Value
+	 * ----------|---------------|------------------------------------------------|-----------------
+	 * mixed     | signature     | Signature method name or object                | provider default
+	 *
 	 * @param   array   provider options
+	 * @return  void
 	 */
 	public function __construct(array $options = NULL)
 	{
@@ -72,6 +74,33 @@ abstract class OAuth_Provider {
 	}
 
 	/**
+	 * Returns the request token URL for the provider.
+	 *
+	 *     $url = $provider->url_request_token();
+	 *
+	 * @return  string
+	 */
+	abstract public function url_request_token();
+
+	/**
+	 * Returns the authorization URL for the provider.
+	 *
+	 *     $url = $provider->url_authorize();
+	 *
+	 * @return  string
+	 */
+	abstract public function url_authorize();
+
+	/**
+	 * Returns the access token endpoint for the provider.
+	 *
+	 *     $url = $provider->url_access_token();
+	 *
+	 * @return  string
+	 */
+	abstract public function url_access_token();
+
+	/**
 	 * Ask for a request token from the OAuth provider.
 	 *
 	 *     $token = $provider->request_token($consumer);
@@ -84,16 +113,10 @@ abstract class OAuth_Provider {
 	public function request_token(OAuth_Consumer $consumer, array $params = NULL)
 	{
 		// Create a new GET request for a request token with the required parameters
-		$request = OAuth_Request::factory('token', 'GET', $this->urls['request_token'], array(
+		$request = OAuth_Request::factory('token', 'GET', $this->url_request_token(), array(
 			'oauth_consumer_key' => $consumer->key,
 			'oauth_callback'     => $consumer->callback,
 		));
-
-		if (isset($this->params['request_token']))
-		{
-			// Load additional provider parameters
-			$request->params($this->params['request_token']);
-		}
 
 		if ($params)
 		{
@@ -126,15 +149,9 @@ abstract class OAuth_Provider {
 	public function authorize_url(OAuth_Token_Request $token, array $params = NULL)
 	{
 		// Create a new GET request for a request token with the required parameters
-		$request = OAuth_Request::factory('authorize', 'GET', $this->urls['authorize_url'], array(
+		$request = OAuth_Request::factory('authorize', 'GET', $this->url_authorize(), array(
 			'oauth_token' => $token->token,
 		));
-
-		if (isset($this->params['authorize_url']))
-		{
-			// Load additional provider parameters
-			$request->params($this->params['authorize_url']);
-		}
 
 		if ($params)
 		{
@@ -158,17 +175,11 @@ abstract class OAuth_Provider {
 	public function access_token(OAuth_Consumer $consumer, OAuth_Token_Request $token, array $params = NULL)
 	{
 		// Create a new GET request for a request token with the required parameters
-		$request = OAuth_Request::factory('access', 'GET', $this->urls['access_token'], array(
+		$request = OAuth_Request::factory('access', 'GET', $this->url_access_token(), array(
 			'oauth_consumer_key' => $consumer->key,
 			'oauth_token'        => $token->token,
 			'oauth_verifier'     => $token->verifier,
 		));
-
-		if (isset($this->params['access_token']))
-		{
-			// Load additional provider parameters
-			$request->params($this->params['access_token']);
-		}
 
 		if ($params)
 		{
