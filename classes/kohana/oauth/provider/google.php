@@ -20,6 +20,21 @@ class Kohana_OAuth_Provider_Google extends OAuth_Provider {
 
 	protected $signature = 'HMAC-SHA1';
 
+	public function url_request_token()
+	{
+		return 'https://www.google.com/accounts/OAuthGetRequestToken';
+	}
+
+	public function url_authorize()
+	{
+		return 'https://www.google.com/accounts/OAuthAuthorizeToken';
+	}
+
+	public function url_access_token()
+	{
+		return 'https://www.google.com/accounts/OAuthGetAccessToken';
+	}
+
 	public function request_token(OAuth_Consumer $consumer, array $params = NULL)
 	{
 		if ( ! isset($params['scope']))
@@ -27,7 +42,7 @@ class Kohana_OAuth_Provider_Google extends OAuth_Provider {
 			// All request tokens must specify the data scope to access
 			// http://code.google.com/apis/accounts/docs/OAuth.html#prepScope
 			throw new Kohana_OAuth_Exception('Required parameter to not passed: :param', array(
-				':param' => 'scope';
+				':param' => 'scope',
 			));
 		}
 
