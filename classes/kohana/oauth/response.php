@@ -12,7 +12,7 @@ class Kohana_OAuth_Response {
 
 	public static function factory($body)
 	{
-		return new self($body);
+		return new OAuth_Response($body);
 	}
 
 	/**

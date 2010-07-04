@@ -21,7 +21,7 @@ abstract class Kohana_OAuth_Token {
 	 */
 	public static function factory($name, array $options = NULL)
 	{
-		$class = __CLASS__.'_'.$name;
+		$class = 'OAuth_Token_'.$name;
 
 		return new $class($options);
 	}

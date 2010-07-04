@@ -22,7 +22,7 @@ abstract class Kohana_OAuth_Signature {
 	public static function factory($name, array $options = NULL)
 	{
 		// Create the class name as a base of this class
-		$class = __CLASS__.'_'.str_replace('-', '_', $name);
+		$class = 'OAuth_Signature_'.str_replace('-', '_', $name);
 
 		return new $class($options);
 	}

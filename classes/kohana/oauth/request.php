@@ -23,7 +23,7 @@ class Kohana_OAuth_Request {
 	 */
 	public static function factory($type, $method, $url = NULL, array $params = NULL)
 	{
-		$class = __CLASS__.'_'.$type;
+		$class = 'OAuth_Request_'.$type;
 
 		return new $class($method, $url, $params);
 	}
