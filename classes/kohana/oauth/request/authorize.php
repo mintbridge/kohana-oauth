@@ -9,7 +9,7 @@
  * @license    http://kohanaframework.org/license
  * @since      3.0.7
  */
-class Kohana_OAuth_Request_Authorize extends OAuth_Request{
+class Kohana_OAuth_Request_Authorize extends OAuth_Request {
 
 	protected $name = 'request';
 
