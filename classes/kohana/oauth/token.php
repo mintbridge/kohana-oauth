@@ -81,4 +81,14 @@ abstract class Kohana_OAuth_Token {
 		return $this->$key;
 	}
 
+	/**
+	 * Returns the token key.
+	 *
+	 * @return  string
+	 */
+	public function __toString()
+	{
+		return (string) $this->token;
+	}
+
 } // End OAuth_Token
